@@ -1,3 +1,6 @@
+#pragma once
+#ifndef MAP_H
+#define MAP_H
 #include <SFML/Graphics.hpp>
 
 using namespace sf;
@@ -17,3 +20,4 @@ String MapLayout[mapHeight] = {
 "0        0",
 "0000000000",
 };
+#endif
