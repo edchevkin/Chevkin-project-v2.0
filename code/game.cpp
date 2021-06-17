@@ -1,11 +1,11 @@
 #include <SFML/Graphics.hpp>
-#include "map.h"
-#include "hero.cpp"
-#include "enemy.cpp"
+#include "hero.h"
+#include "enemy.h"
 #include <sstream>
+#include <iostream>
+#include <vector>
 
 using namespace sf;
-using namespace std;
 
 
 int main() {
@@ -24,16 +24,37 @@ int main() {
     mapSprite.setTexture(mapTexture);
 
     //initializing player
-    //Hero hero(512, 512);
+    Hero hero(512, 512); 
 
     //initializing enemies
-    //Enemy enemy1(0, 0);
-    //Enemy enemy2(512, 0);
-    //Enemy enemy3(0, 512);
+    Enemy enemy1(0, 0);
+    Enemy enemy2(512, 0);
+    Enemy enemy3(0, 512);
+    
 
-    //initializing utility variables
+    ///time
     Clock clock;
+    ///temporary score
     float scoreTemp = 0;
+
+    ///height of map
+    const int mapHeight = 10;
+    ///width of map
+    const int mapWidth = 10;
+    ///resolution of map tile
+    const int rt = 32;
+    String MapLayout[mapHeight] = {
+    "0000000000",
+    "0        0",
+    "0        0",
+    "0        0",
+    "0        0",
+    "0        0",
+    "0        0",
+    "0        0",
+    "0        0",
+    "0000000000",
+    };
 
     //game loop
     while (window.isOpen()) {
@@ -60,15 +81,14 @@ int main() {
 
         //movement of hero and enemies if hero is alive
         if (hero.alive) {
-            hero.movement(time);
+            hero.update(time);
+            hero.withEnemyCollisions(enemy1, time);
+            hero.withEnemyCollisions(enemy2, time);
+            hero.withEnemyCollisions(enemy3, time);
 
-            //hero.withEnemyCollision(enemy1, time);
-            //hero.withEnemyCollision(enemy2, time);
-            //hero.withEnemyCollision(enemy3, time);
-
-            enemy1.movement(time);
-            enemy2.movement(time);
-            enemy3.movement(time);
+            enemy1.update(time);
+            enemy2.update(time);
+            enemy3.update(time);
         }
         //setting the camera position
         window.setView(hero.view);

@@ -2,10 +2,7 @@
 #ifndef ENEMY_H
 #define ENEMY_H
 #include <SFML/Graphics.hpp>
-extern  const int rt;
-extern const int mapWidth;
-extern const int mapHeight;
-extern sf::String MapLayout[];
+#include "map.h"
 
 using namespace std;
 using namespace sf;
@@ -13,6 +10,12 @@ using namespace sf;
 
 class Enemy {
 public:	// actually no private in the class
+	///height of map
+	static const int mapHeight = 10;
+	///width of map
+	static const int mapWidth = 10;
+	///resolution of map tile
+	static const int rt = 32;
 	///x coordinate of enemy
 	float x = 0;
 	/// y coordinate of enemy
@@ -32,7 +35,7 @@ public:	// actually no private in the class
 	///counter for managing animation
 	float animCounter = 0;
 	///general velocity
-	float speed = 0.1; 
+	float speed = 0.1f; 
 	///variable for managing enemy movement
 	int direction = 0; 
 	///damage which enemy deals
@@ -45,6 +48,13 @@ public:	// actually no private in the class
 	Texture texture;
 	///enemy sprite
 	Sprite sprite;
+	/**
+	* \brief enemy object constructor
+	* 
+	* \param X - desired starting x coord of enemy
+	* 
+	* \param Y - desired starting y coord of enemy
+	*/
 	Enemy(float X, float Y);
 
 	/**
@@ -52,7 +62,7 @@ public:	// actually no private in the class
 	* such as walking animation, interacions with map borders
 	* sets enemy's hitbox and sprite position
 	* 
-	* \param time is for smoother enemy movement and is used
+	* \param time - for smoother enemy movement and is used
 	* in dirCounter to manage the direction in which enemy is moving
 	*/
 	void movement(float time);
@@ -60,20 +70,26 @@ public:	// actually no private in the class
 	/**
 	* \brief function gets dx and dy according to direction value
 	*/
-	void getDxDy();
+	void checkDxDy();
 
 	/**
 	* \brief function for making enemy not cross the map borders
 	*/
-	void WithMapInteractions();
+	void withMapInteractions();
 
 	/**
 	* \brief animation function handles enemy movement animation
 	* 
-	* \param time is used in counter animCounter to select what 
+	* \param time - used in counter animCounter to select what 
 	* part of enemy.png programm should give to sprite
 	*/
 	void animation(float time);
+
+	/**
+	*\brief manages all hero functions such as moving, obeying map borders,
+	* keyboard surveillance, setting camera position and colliding with enemy
+	*/
+	void update(float time);
 };
 #endif
 

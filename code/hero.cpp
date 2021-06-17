@@ -1,7 +1,7 @@
-#include "Hero.h"
+#include "hero.h"
 
 Hero::Hero(float X, float Y) {
-    hitbox.setSize(Vector2f(w, h));
+    hitbox.setSize(Vector2f(float(w), float(h)));
     hitbox.setPosition(x, y);
     image.loadFromFile("images/hero.png");
     texture.loadFromImage(image);
@@ -41,19 +41,19 @@ void Hero::checkDxDy() {
 void Hero::keyboard() {
     if (Keyboard::isKeyPressed(Keyboard::S)) {
         direction = 0;
-        speed = 0.1;
+        speed = float(0.1);
     }
     if (Keyboard::isKeyPressed(Keyboard::A)) {
         direction = 1;
-        speed = 0.1;
+        speed = float(0.1);
     }
     if (Keyboard::isKeyPressed(Keyboard::D)) {
         direction = 2;
-        speed = 0.1;
+        speed = float(0.1);
     }
     if (Keyboard::isKeyPressed(Keyboard::W)) {
         direction = 3;
-        speed = 0.1;
+        speed = float(0.1);
     }
     if ((!(Keyboard::isKeyPressed(Keyboard::S)) &&
         !(Keyboard::isKeyPressed(Keyboard::A)) &&
@@ -69,22 +69,22 @@ void Hero::animation(float time) {
     }
 
     if (direction == 0) {
-        animCounter += 0.005 * time;
+        animCounter += float(0.005) * time;
         if (animCounter > 4) animCounter -= 4;
         sprite.setTextureRect(IntRect(w * int(animCounter), 0, w, h));
     }
     if (direction == 1) {
-        animCounter += 0.005 * time;
+        animCounter += float(0.005) * time;
         if (animCounter > 4) animCounter -= 4;
         sprite.setTextureRect(IntRect(w * int(animCounter), h, w, h));
     }
     if (direction == 2) {
-        animCounter += 0.005 * time;
+        animCounter += float(0.005) * time;
         if (animCounter > 4) animCounter -= 4;
         sprite.setTextureRect(IntRect(w * int(animCounter), 2 * h, w, h));
     }
     if (direction == 3) {
-        animCounter += 0.005 * time;
+        animCounter += float(0.005) * time;
         if (animCounter > 4) animCounter -= 4;
         sprite.setTextureRect(IntRect(w * int(animCounter), 3 * h, w, h));
     }
@@ -108,23 +108,33 @@ void Hero::withMapInteractions() {
     if (x < rt)
         x = rt;
     if (x > (mapWidth - 1) * rt - w)
-        x = (mapWidth - 1) * rt - w;
+        x = (mapWidth - 1) * float(rt) - w;
     if (y < rt)
         y = rt;
     if (y > (mapHeight - 1) * rt - h)
-        y = (mapHeight - 1) * rt - h;
+        y = (mapHeight - 1) * float(rt) - h;
 }
 
-//void Hero::withEnemyCollision(Enemy enemy, float time) {
-//
-//    if (timeAfterCollision > 10) {
-//        if (FloatRect(x + w / 4, y + h / 4, w / 2, h / 2).intersects(FloatRect(enemy.x, enemy.y, enemy.w, enemy.h))) {
-//            hp -= enemy.damage;
-//            timeAfterCollision = 0;
-//        }
-//    }
-//    if (hp <= 0)
-//        alive = false;
-//
-//    timeAfterCollision += 0.005 * time;
-//}
+void Hero::withEnemyCollisions(Enemy enemy, float time) {
+    float tw = float(w); float th = float(h);
+    if (timeAfterCollision > 10) {
+        if (FloatRect(x + tw / 4, y + th / 4, tw / 2, th / 2).intersects
+        (FloatRect(enemy.x, enemy.y, float(enemy.w), float(enemy.h)))) {
+            hp -= enemy.damage;
+            timeAfterCollision = 0;
+        }
+    }
+    if (hp <= 0)
+        alive = false;
+
+    timeAfterCollision += float(0.005) * time;
+}
+
+void Hero::update(float time) {
+    Hero::keyboard();
+    Hero::checkDxDy();
+    Hero::withMapInteractions();
+    Hero::animation(time);
+    Hero::movement(time);
+    Hero::viewCentring();
+}

@@ -3,7 +3,7 @@
 Enemy::Enemy(float X, float Y) 
 {
 	x = X; y = Y;
-	hitbox.setSize(Vector2f(w, h));
+	hitbox.setSize(Vector2f(float(w), float(h)));
 	hitbox.setPosition(x, y);
 	hitbox.setFillColor(Color::Red);
 	image.loadFromFile("images/enemy.png");
@@ -26,7 +26,7 @@ void Enemy::movement(float time) {
 
 }
 
-void Enemy::getDxDy() {
+void Enemy::checkDxDy() {
 	if (direction == 0) {
 		dx = 0; dy = speed;
 	}
@@ -41,22 +41,21 @@ void Enemy::getDxDy() {
 	}
 }
 
- void Enemy::WithMapInteractions() {
-
+ void Enemy::withMapInteractions() {
 	if (x < rt) {
 		x = rt;
 		dirCount = dirCountCap;
 	}
-	if (x > (mapWidth - 1) * rt - w) {
-		x = (mapWidth - 1) * rt - w;
+	if (x > (mapWidth - 1) * rt - float(w)) {
+		x = (mapWidth - 1) * rt - float(w);
 		dirCount = dirCountCap;
 	}
 	if (y < rt) {
 		y = rt;
 		dirCount = dirCountCap;
 	}
-	if (y > (mapHeight - 1) * rt - h) {
-		y = (mapHeight - 1) * rt - h;
+	if (y > (mapHeight - 1) * rt - float(h)) {
+		y = (mapHeight - 1) * rt - float(h);
 		dirCount = dirCountCap;
 	}
 }
@@ -82,4 +81,11 @@ void Enemy::animation(float time) {
 		if (animCounter > 3) animCounter -= 3;
 		sprite.setTextureRect(IntRect(w * int(animCounter), h, w, h));
 	}
+}
+
+void Enemy::update(float time) {
+	Enemy::checkDxDy();
+	Enemy::withMapInteractions();
+	Enemy::animation(time);
+	Enemy::movement(time);
 }

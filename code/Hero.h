@@ -2,17 +2,19 @@
 #ifndef HERO_H
 #define HERO_H
 #include <SFML/Graphics.hpp>
-//#include "enemy.h"
-extern  const int rt;
-extern const int mapWidth;
-extern const int mapHeight;
-extern sf::String MapLayout[];
+#include "enemy.h"
 
 using namespace sf;
 
 
 class Hero {
 public:
+    ///height of map
+    static const int mapHeight = 10;
+    ///width of map
+    static const int mapWidth = 10;
+    ///resolution of map tile
+    static const int rt = 32;
     ///x coordinate of player
     float x = 0;
     ///y coordinate of enemy
@@ -70,7 +72,7 @@ public:
     * interactions of hero with map, sets position of hitbox
     * and sprite
     * 
-    * \param time is time elapsed since the last game window
+    * \param time - time elapsed since the last game window
     * update and is used for smoother hero movement
     */
     void movement(float time);
@@ -88,7 +90,7 @@ public:
     /**
     * \brief animation function manages hero movement animation
     * 
-    * \param time is time elapsed since the last game window update
+    * \param time - time elapsed since the last game window update
     * and is used for changing hero's sprite
     */
     void animation(float time);
@@ -96,7 +98,7 @@ public:
     /**
     * \brief utility function for centering camera on hero
     * 
-    * \return sf::View view which is camera 
+    * \return sf::View view  - which is camera 
     */
     View viewCentring();
 
@@ -111,10 +113,20 @@ public:
     * 
     * \param enemy class object
     * 
-    * \param time is time elapsed after last game window clear
+    * \param time - time elapsed after last game window clear
     * and is used in  timeAfterCollision counter to make hero
     * immune for certain amount of time
     */
-    //void withEnemyCollision(Enemy enemy, float time);
+    void withEnemyCollisions(Enemy enemy, float time);
+
+    /**
+    *\brief manages all hero functions such as moving, obeying map borders,
+    * keyboard surveillance, setting camera position and colliding with enemy
+    * 
+    * \param time - time elapsed after last game window clear
+    * and is used in  timeAfterCollision counter to make hero
+    * immune for certain amount of time
+    */
+    void update(float time);
 };
 #endif
