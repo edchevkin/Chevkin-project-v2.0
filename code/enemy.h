@@ -30,9 +30,10 @@ using namespace sf;
 class Enemy {
 public:	///< actually no private in the class
 	float x, y, dx, dy = 0; 
-	float w, h = 0; 
+	int w = 32;
+	int h = 32;
 	float dirCount = 0;
-	float dirCountCap = 2000;
+	float dirCountCap = 1000;
 	float animCounter = 0;
 	float speed = 0.1; 
 	int direction = 0; 
@@ -41,8 +42,7 @@ public:	///< actually no private in the class
 	Image image;
 	Texture texture;
 	Sprite sprite;
-	Enemy(float X, float Y, float W, float H) {
-		w = W; h = H;
+	Enemy(float X, float Y) {
 		x = X; y = Y;
 		hitbox.setSize(Vector2f(w, h));
 		hitbox.setPosition(x, y);
@@ -62,7 +62,27 @@ public:	///< actually no private in the class
 	* in dirCounter to manage the direction in which enemy is moving
 	*/
 	void movement(float time) {
+		getDxDy();
 
+		if (dirCount >= dirCountCap) {
+			dirCount = 0;
+			direction = rand() % 4;
+		}
+		dirCount += time;
+
+		x += dx * time;
+		y += dy * time;
+		animation(time);
+		WithMapInteractions();
+		hitbox.setPosition(x, y);
+		sprite.setPosition(hitbox.getPosition());
+	
+	}
+
+	/**
+	* \brief function gets dx and dy according to direction value
+	*/
+	void getDxDy() {
 		if (direction == 0) {
 			dx = 0; dy = speed;
 		}
@@ -75,27 +95,13 @@ public:	///< actually no private in the class
 		else if (direction == 3) {
 			dx = -speed; dy = 0;
 		}
-
-		if (dirCount >= dirCountCap) {
-			dirCount = 0;
-			direction = RandDir();
-		}
-		dirCount += time;
-
-		x += dx * time;
-		y += dy * time;
-		animation(time);
-		enemyWithMapInteractions();
-		hitbox.setPosition(x, y);
-		sprite.setPosition(hitbox.getPosition());
-	
 	}
 
 
 	/**
 	* \brief function for making enemy not cross the map borders
 	*/
-	void enemyWithMapInteractions() { 
+	void WithMapInteractions() { 
 		
 		if (x < rt) {
 			x = rt;
@@ -122,39 +128,24 @@ public:	///< actually no private in the class
 	*/
 	void animation(float time) {
 		if (direction == 0) {
-			animCounter += 0.005 * time;
+			animCounter += 0.005f * time;
 			if (animCounter > 3) animCounter -= 3;
 			sprite.setTextureRect(IntRect(w * int(animCounter), 0, w, h));
 		}
 		if (direction == 1) {
-			animCounter += 0.005 * time;
+			animCounter += 0.005f * time;
 			if (animCounter > 3) animCounter -= 3;
 			sprite.setTextureRect(IntRect(w * int(animCounter), 3 * h, w, h));
 		}
 		if (direction == 2) {
-			animCounter += 0.005 * time;
+			animCounter += 0.005f * time;
 			if (animCounter > 3) animCounter -= 3;
 			sprite.setTextureRect(IntRect(w * int(animCounter), 2 * h, w, h));
 		}
 		if (direction == 3) {
-			animCounter += 0.005 * time;
+			animCounter += 0.005f * time;
 			if (animCounter > 3) animCounter -= 3;
 			sprite.setTextureRect(IntRect(w * int(animCounter), h, w, h));
-		}
-	}
-	/**
-	* \brief utility function for getting random number 0-3 according
-	* to certain condition
-	* 
-	* \return random number from 0 to 3
-	*/
-	int RandDir() {
-		
-		if (direction == 0 || direction == 1) {
-			return 2 + rand() % 2;
-		}
-		else{
-			return rand() % 2;
 		}
 	}
 };
