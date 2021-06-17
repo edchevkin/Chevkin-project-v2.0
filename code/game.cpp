@@ -69,8 +69,6 @@ int main() {
             enemy2.movement(time);
             enemy3.movement(time);
         }
-        cout << hero.direction << endl;
-
         ///setting the camera position///
         window.setView(hero.view);
 

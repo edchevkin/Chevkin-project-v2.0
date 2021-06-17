@@ -40,7 +40,7 @@ public:
     int h = 48;
     int direction = 0;
     int hp = 100;
-    float camLength = rt * mapWidth / 2 ;
+    float camLength = rt * mapWidth / 4;
     float timeAfterCollision = 0; 
     float animCounter = 0;
     bool alive = true;
@@ -116,6 +116,9 @@ public:
         else if (direction == 3) {
             dx = 0; dy = -speed;
         }
+        else if (direction == 4) {
+            dx = 0; dy = 0;
+        }
     }
 
     /**
@@ -136,8 +139,13 @@ public:
         }
         if (Keyboard::isKeyPressed(Keyboard::W)) {
             direction = 3; 
-            speed = 0.1;
-             
+            speed = 0.1;   
+        }
+        if ((!(Keyboard::isKeyPressed(Keyboard::S)) &&
+            !(Keyboard::isKeyPressed(Keyboard::A)) &&
+            !(Keyboard::isKeyPressed(Keyboard::W)) &&
+            !(Keyboard::isKeyPressed(Keyboard::D)))) {
+            direction = 4;
         }
     }
 
@@ -148,6 +156,9 @@ public:
     * and is used for changing hero's sprite
     */
     void animation(float time) {
+        if (dx == 0 && dy == 0) {
+            sprite.setTextureRect(IntRect(0, 0, w, h));
+        }
         
         if (direction == 0) {
             animCounter += 0.005 * time;
