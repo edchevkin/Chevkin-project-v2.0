@@ -36,10 +36,11 @@ class Hero {
 public:
     float x, y, dx, dy, speed = 0;
     float cameraX, cameraY = 0;
-    float w, h = 0;
+    int w = 32;
+    int h = 48;
     int direction = 0;
     int hp = 100;
-    float camLength = rt * mapWidth / 2;
+    float camLength = rt * mapWidth / 2 ;
     float timeAfterCollision = 0; 
     float animCounter = 0;
     bool alive = true;
@@ -61,8 +62,7 @@ public:
     * \param H - desired height of hero hitbox and sprite
     * 
     */
-    Hero(float X, float Y, float W, float H) {
-        w = W; h = H;
+    Hero(float X, float Y) {
         hitbox.setSize(Vector2f(w, h));
         hitbox.setPosition(x, y);
         image.loadFromFile("images/hero.png");
@@ -71,6 +71,7 @@ public:
         sprite.setTextureRect(IntRect(0, 0, w, h));
         x = X; y = Y;
         view.reset(FloatRect(x, y, camLength * 2, camLength * 2));
+        dx = 0; dy = 0;
     }
 
     /**
@@ -85,9 +86,26 @@ public:
     void movement(float time) {
         
         keyboard();
+        
+        checkDxDy();
 
+        y += dy * time;
+        x += dx * time;
+        speed = 0;
+
+        WithMapInteractions();
+        animation(time);
+        hitbox.setPosition(x, y);
+        sprite.setPosition(hitbox.getPosition());
+        viewCentersOnHero();
+    }
+    /**
+    * \brief function which checks direction and sets dx and
+    * dy to certain value according to conditions
+    */
+    void checkDxDy() {
         if (direction == 0) {
-            dx = 0; dy = speed;
+            dx = 0.0f; dy = speed;
         }
         else if (direction == 1) {
             dx = -speed; dy = 0;
@@ -98,16 +116,6 @@ public:
         else if (direction == 3) {
             dx = 0; dy = -speed;
         }
-
-        y += dy * time;
-        x += dx * time;
-        speed = 0;
-
-        heroWithMapInteractions();
-        animation(time);
-        hitbox.setPosition(x, y);
-        sprite.setPosition(hitbox.getPosition());
-        viewCentersOnHero();
     }
 
     /**
@@ -185,7 +193,7 @@ public:
     /**
     * \brief function which oversees hero not crossing map borders
     */
-    void heroWithMapInteractions() {
+    void WithMapInteractions() {
         if (x < rt)
             x = rt;
         if (x > (mapWidth - 1) * rt - w)
@@ -209,7 +217,7 @@ public:
     void heroWithEnemyCollision(Enemy enemy, float time) {
         
         if (timeAfterCollision > 10) {
-            if (FloatRect(x, y, w, h).intersects(FloatRect(enemy.x, enemy.y, enemy.w, enemy.h))) {
+            if (FloatRect(x + w / 4, y + h / 4, w / 2 , h / 2).intersects(FloatRect(enemy.x, enemy.y, enemy.w, enemy.h))) {
                 hp -= enemy.damage;
                 timeAfterCollision = 0;
             }

@@ -23,12 +23,12 @@ int main() {
     mapSprite.setTexture(mapTexture);
 
     ///initializing player///
-    Hero hero(512, 512, 32, 48);
+    Hero hero(512, 512);
 
     ///initializing enemies///
-    Enemy enemy1(0, 0, 32, 32);
-    Enemy enemy2(512, 0, 32, 32);
-    Enemy enemy3(0, 512, 32, 32);
+    Enemy enemy1(0, 0);
+    Enemy enemy2(512, 0);
+    Enemy enemy3(0, 512);
 
     ///initializing utility variables///
     Clock clock;
@@ -37,10 +37,10 @@ int main() {
     ///game loop///
     while (window.isOpen()) {
         ///time and score counters///
-        float time = clock.getElapsedTime().asMicroseconds();
+        float time = clock.getElapsedTime().asSeconds();
         clock.restart();
-        time /= 1000;
-        scoreTemp += time / 1000;
+        time = time * 1000;
+        scoreTemp += time /1000;
 
         ///if game window closed break from the game loop///
         sf::Event event;
@@ -69,6 +69,7 @@ int main() {
             enemy2.movement(time);
             enemy3.movement(time);
         }
+        cout << hero.direction << endl;
 
         ///setting the camera position///
         window.setView(hero.view);
@@ -83,7 +84,7 @@ int main() {
                     mapSprite.setTextureRect(IntRect(0, 32, rt, rt));
                 if (MapLayout[i][j] == ' ')
                     mapSprite.setTextureRect(IntRect(160, 0, rt, rt));
-                mapSprite.setPosition(i * rt, j * rt);
+                mapSprite.setPosition(i * rt * 1.0f, j * rt * 1.0f);
                 window.draw(mapSprite);
             }
 
