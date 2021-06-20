@@ -138,3 +138,6 @@ void Hero::update(float time) {
     Hero::movement(time);
     Hero::viewCentring();
 }
+
+const int Hero::rt;
+const int Enemy::rt;
